@@ -1,11 +1,5 @@
 {
     "version": 2,
-    "builds": [
-        {
-            "src": "index.js",
-            "use": "npm install && npm install --prefix client && npm run build --prefix client"
-        }
-    ],
     "routes": [
         {
             "src": "/(.*)",
