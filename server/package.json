@@ -6,7 +6,11 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon index.js",
+<<<<<<< HEAD
     "build": "npm install && npm install --prefix client && npm run build --prefix client"
+=======
+    "build": "npm install && npm install --prefix ./client && npm run build --prefix ./client"
+>>>>>>> 842a4334c50e52145745d9407c5a678753fdb765
   },
   "keywords": [],
   "author": "",
