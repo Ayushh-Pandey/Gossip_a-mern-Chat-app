@@ -46,6 +46,7 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages, childr
                 position: 'top-center',
                 autoClose: 5000,
                 closeOnClick: true,
+                containerId:'updateGroupModal'
             })
             return;
         }
@@ -70,6 +71,7 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages, childr
                 position: 'top-center',
                 autoClose: 5000,
                 closeOnClick: true,
+                containerId:'updateGroupModal'
             })
             setLoading(false);
         }
@@ -98,6 +100,7 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages, childr
                 position: 'top-center',
                 autoClose: 5000,
                 closeOnClick: true,
+                containerId:'updateGroupModal'
             })
             setRenameLoading(false);
         }
@@ -125,7 +128,8 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages, childr
             toast.error("Failed to load the Search Results", {
                 position: 'top-center',
                 autoClose: 5000,
-                closeOnClick: true
+                closeOnClick: true,
+                containerId:'updateGroupModal'
             })
             setLoading(false);
         }
@@ -135,7 +139,8 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages, childr
             toast.warning("User Already in group", {
                 position: 'top-center',
                 autoClose: 5000,
-                closeOnClick: true
+                closeOnClick: true,
+                containerId:'updateGroupModal'
             })
             return;
         }
@@ -144,6 +149,7 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages, childr
                 position: 'top-center',
                 autoClose: 5000,
                 closeOnClick: true,
+                containerId:'updateGroupModal'
             })
             return;
         }
@@ -166,7 +172,8 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages, childr
             toast.error(`${error.response.data.message}`, {
                 position: 'top-center',
                 autoClose: 5000,
-                closeOnClick: true
+                closeOnClick: true,
+                containerId:'updateGroupModal'
             })
             setLoading(false);
         }
@@ -174,7 +181,6 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages, childr
     }
     return (
         <>
-            <ToastContainer />
             <div>
                 {children ? (
                     <span onClick={handleClick}>{children}</span>
@@ -227,6 +233,7 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages, childr
                     </Box>
                 </Modal>
             </div>
+            <ToastContainer containerId='updateGroupModal'/>
         </>
 
     )

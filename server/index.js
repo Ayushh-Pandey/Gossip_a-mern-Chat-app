@@ -1,8 +1,7 @@
 const path = require("path")
 const express = require("express");
 const app = express();
-const dotenv = require("dotenv");
-dotenv.config();
+require("dotenv").config();
 const PORT = process.env.PORT || 5000;
 const cors = require("cors");
 const connectDB = require("./config/db");
@@ -10,13 +9,14 @@ const connectDB = require("./config/db");
 app.use(cors({
     origin:'http://localhost:3000'
 }));
-app.use(express.json());
 
+app.use(express.json());
 
 
 const userRoute = require("./routes/userRoute");
 const chatRoute = require("./routes/chatRoute");
 const messageRoute = require("./routes/messageRoute");
+const { socketConnect } = require("./config/webSocketConnect");
 
 app.use("/api/user",userRoute);
 app.use("/api/chats",chatRoute);
@@ -25,16 +25,18 @@ app.use("/api/message",messageRoute);
 // ----------------------deployment--------------------
 
 const __dirname1 = path.resolve();
-app.use(express.static(path.join(__dirname,'/client/build')));
+app.use(express.static(path.join(__dirname,'../client/build')));
 
 app.get('/*',(req,res)=>{
     res.sendFile(path.resolve(__dirname,"client",'build','index.html'));
 })
+
 // ----------------------deployment--------------------
 
 app.get('/',(req,res)=>{
     res.send("api is working")
 })
+
 connectDB();
 
 const server = app.listen(PORT , ()=>{
@@ -42,52 +44,13 @@ const server = app.listen(PORT , ()=>{
 })
 
 // ------------------------socket.io for live chatting------------------------------------
-const io = require('socket.io')(server,{
+
+const io = require('socket.io')(server, {
     pingTimeout: 60000, // in milliseconds
-    cors:{
+    cors: {
         origin: 'http://localhost:3000',
     }
 });
+io.on("connection", socketConnect)
 
-io.on("connection",(socket)=>{
-    console.log("connected to socket.io")
-
-    socket.on('setup',(userData)=>{
-        socket.join(userData._id);
-        console.log(userData._id);
-        socket.emit('connected')
-    })
-
-    socket.on('join_chat',(room)=>{
-        socket.join(room);
-        console.log('room',room)
-    })
-
-    socket.on('typing',(room)=>
-        socket.in(room).emit("typing")
-    )
-    socket.on('stop_typing',(room)=>
-        socket.in(room).emit("stop_typing")
-    )
-
-    socket.on('new_message',(newMessageReceived)=>{
-        var chat = newMessageReceived.chat;
-
-        if(!chat.users)
-            return console.log("chat.users not defined")
-
-        chat.users.forEach((user)=>{
-            if(user._id == newMessageReceived.sender._id)
-                return ;
-
-            socket.in(user._id).emit('message_received',newMessageReceived);
-
-        })
-    })
-
-    socket.off('setup',()=>{
-        console.log("USER DISCONNECTED");
-        socket.leave(userData._id);
-    })
-})
 // ------------------------socket.io for live chatting------------------------------------

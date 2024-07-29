@@ -18,7 +18,7 @@ const END_POINT = "http://localhost:5000";
 var socket, selectedChatCompare;
 
 const SingleChat = ({ fetchAgain, setFetchAgain }) => {
-    const { user, selectedChat, setSelectedChat, notification, setNotification } = useContext(ChatContext);
+    const { user, selectedChat, setSelectedChat, notification, setNotification, isAuthenticated } = useContext(ChatContext);
     const [messages, setMessages] = useState([]);
     const [loading, setLoading] = useState(false);
     const [newMessage, setNewMessage] = useState();
@@ -36,14 +36,15 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     // }
 
     useEffect(() => {
-        socket = io(END_POINT);
-        socket.emit("setup", user);
-        socket.on('connected', () =>
-            setSocketConnected(true)
-        );
-        socket.on('typing', () => setIsTyping(true));
-        socket.on('stop_typing', () => setIsTyping(false));
-
+        if (isAuthenticated) {
+            socket = io(END_POINT);
+            socket.emit("setup", user);
+            socket.on('connected', () =>
+                setSocketConnected(true)
+            );
+            socket.on('typing', () => setIsTyping(true));
+            socket.on('stop_typing', () => setIsTyping(false));
+        }
     }, [])
 
     const fetchMessages = async () => {
@@ -55,10 +56,9 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                 },
             };
             setLoading(true)
-            // console.log('singlechat',selectedChat)
+
             const { data } = await axios.get(`/api/message/${selectedChat._id}`, config)
 
-            // console.log(messages)
             setMessages(data);
             setLoading(false);
             socket.emit('join_chat', selectedChat._id);
@@ -66,7 +66,8 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
             toast.error("Failed to Load the Messages", {
                 position: 'top-center',
                 autoClose: 5000,
-                closeOnClick: true
+                closeOnClick: true,
+                containerId:'singleChatPage'
             })
         }
     }
@@ -77,7 +78,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     }, [selectedChat])
 
     const sendMessage = async (e) => {
-        if (e.key === 'Enter' && newMessage) {
+        if (e.key === 'Enter' && newMessage && isAuthenticated) {
             socket.emit('stop_typing', selectedChat._id)
             try {
                 const config = {
@@ -91,31 +92,34 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                     content: newMessage,
                     chatId: selectedChat._id,
                 }, config)
-                // console.log(data)
+
                 socket.emit('new_message', data);
                 setMessages([...messages, data]);
             } catch (error) {
                 toast.error("Failed to Load the Messages", {
                     position: 'top-center',
                     autoClose: 5000,
-                    closeOnClick: true
+                    closeOnClick: true,
+                    containerId:'singleChatPage'
                 })
             }
         }
     }
 
     useEffect(() => {
-        socket.on('message_received', (newMessageReceived) => {
-            if (!selectedChatCompare || selectedChatCompare._id !== newMessageReceived.chat._id) {
-                if (!notification.includes(newMessageReceived)) {
-                    setNotification([newMessageReceived, ...notification])
-                    setFetchAgain(!fetchAgain)
+        if (isAuthenticated) {
+            socket.on('message_received', (newMessageReceived) => {
+                if (!selectedChatCompare || selectedChatCompare._id !== newMessageReceived.chat._id) {
+                    if (!notification.includes(newMessageReceived)) {
+                        setNotification([newMessageReceived, ...notification])
+                        setFetchAgain(!fetchAgain)
+                    }
                 }
-            }
-            else {
-                setMessages([...messages, newMessageReceived]);
-            }
-        })
+                else {
+                    setMessages([...messages, newMessageReceived]);
+                }
+            })
+        }
     })
 
 
@@ -141,6 +145,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
+
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
     };
@@ -166,9 +171,9 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
         }
         handleClose();
     }
+
     return (
         <>
-            <ToastContainer />
             {
                 selectedChat ? (<>
 
@@ -224,39 +229,39 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                         ) : (<>
                             {selectedChat.chatName.toUpperCase()}
                             <div>
-                                    <Button
-                                        id="basic-button"
-                                        aria-controls={open ? 'basic-menu' : undefined}
-                                        aria-haspopup="true"
-                                        aria-expanded={open ? 'true' : undefined}
-                                        onClick={handleClick}
-                                    >
-                                        <MoreVertIcon />
-                                    </Button>
-                                    <Menu
-                                        id="basic-menu"
-                                        anchorEl={anchorEl}
-                                        open={open}
-                                        onClose={handleClose}
-                                        MenuListProps={{
-                                            'aria-labelledby': 'basic-button',
-                                        }}
-                                    >
-                                        <MenuItem>
-                                            <Button size='small' color='secondary' variant='outlined' style={{ textDecoration: 'none' }} onClick={() => handleClear()}>clear chat</Button>
-                                        </MenuItem>
-                                        <Divider />
-                                        <UpdateGroupChatModal fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} fetchMessages={fetchMessages} >
-                                            <MenuItem style={{display:'flex',justifyContent:'center', textDecoration: 'none',marginTop:'0'}} >
-                                            <Button size='small' style={{display:'flex',justifyContent:'center', textDecoration: 'none'}} endIcon={<ArrowRightIcon/>}>
+                                <Button
+                                    id="basic-button"
+                                    aria-controls={open ? 'basic-menu' : undefined}
+                                    aria-haspopup="true"
+                                    aria-expanded={open ? 'true' : undefined}
+                                    onClick={handleClick}
+                                >
+                                    <MoreVertIcon />
+                                </Button>
+                                <Menu
+                                    id="basic-menu"
+                                    anchorEl={anchorEl}
+                                    open={open}
+                                    onClose={handleClose}
+                                    MenuListProps={{
+                                        'aria-labelledby': 'basic-button',
+                                    }}
+                                >
+                                    <MenuItem>
+                                        <Button size='small' color='secondary' variant='outlined' style={{ textDecoration: 'none' }} onClick={() => handleClear()}>clear chat</Button>
+                                    </MenuItem>
+                                    <Divider />
+                                    <UpdateGroupChatModal fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} fetchMessages={fetchMessages} >
+                                        <MenuItem style={{ display: 'flex', justifyContent: 'center', textDecoration: 'none', marginTop: '0' }} >
+                                            <Button size='small' style={{ display: 'flex', justifyContent: 'center', textDecoration: 'none' }} endIcon={<ArrowRightIcon />}>
                                                 More
                                             </Button>
-                                            </MenuItem>
-                                        </UpdateGroupChatModal>
-                                    </Menu>
+                                        </MenuItem>
+                                    </UpdateGroupChatModal>
+                                </Menu>
 
-                                </div>
-                            
+                            </div>
+
                         </>
                         ))}
                     </Typography>
@@ -290,6 +295,8 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                     </Box>
                 )
             }
+
+            <ToastContainer containerId='singleChatPage'/>
         </>
     )
 }

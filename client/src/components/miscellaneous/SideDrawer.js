@@ -12,10 +12,11 @@ import ChatLoading from '../ChatLoading';
 import UserListItem from '../UserAvatar/UserListItem';
 import { getSender } from '../../config/ChatLogics';
 import Badge from '@mui/material/Badge';
-import {ToastContainer,toast} from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const SideDrawer = () => {
+
   const [search, setSearch] = useState("");
   const [searchResult, setSearchResult] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -27,39 +28,56 @@ const SideDrawer = () => {
 
   const navigate = useNavigate();
 
-  const { user, setSelectedChat, chats, setChats, notification, setNotification } = useContext(ChatContext);
+  const { user,setUser, setSelectedChat, chats, setChats, notification, setNotification, isAuthenticated, isUserAuthenticated } = useContext(ChatContext);
+
   const handleNotifications = () => {
     setOpenNotifications(true);
   }
-  {notification && console.log('notif',notification)}
+  // {notification && console.log('notif',notification)}
+
   const handleMenu = () => {
     setOpenMenu(true);
   }
+
   const handleSearch = async () => {
-    if (!search) {
-      toast.warning("Please Enter something to search",{
-        position:'top-center',
-        autoClose:5000,
-        closeOnClick:true
+
+    if (!isAuthenticated) {
+      toast.warning("Please Login to search", {
+        position: 'top-center',
+        autoClose: 5000,
+        closeOnClick: true,
+        containerId:'navbar'
       })
       return;
     }
-    try {
-      setLoading(true);
-      const config = {
-        headers: {
-          Authorization: `Bearer ${user.token}`
-        }
-      };
-      const { data } = await axios.get(`/api/user?search=${search}`, config);
-      setLoading(false);
-      setSearchResult(data);
-    } catch (error) {
-      toast.error("Failed to Load the search Result",{
-        autoClose:5000,
-        position:'top-center',
-        closeOnClick:true,
+    else if (!search) {
+      toast.warning("Please Enter something to search", {
+        position: 'top-center',
+        autoClose: 5000,
+        closeOnClick: true,
+        containerId:'navbar'
       })
+      return;
+    }
+    else {
+      try {
+        setLoading(true);
+        const config = {
+          headers: {
+            Authorization: `Bearer ${user.token}`
+          }
+        };
+        const { data } = await axios.get(`/api/user?search=${search}`, config);
+        setLoading(false);
+        setSearchResult(data);
+      } catch (error) {
+        toast.error("Failed to Load the search Result", {
+          autoClose: 5000,
+          position: 'top-center',
+          closeOnClick: true,
+          containerId:'navbar'
+        })
+      }
     }
   }
 
@@ -74,21 +92,22 @@ const SideDrawer = () => {
         }
       };
       const { data } = await axios.post('/api/chats', { userId }, config);
-      // console.log("data",data);
+
       if (!chats.find((c) => c._id === data._id)) {
         setChats([data, ...chats]);
       }
-      // console.log("data",data)
+
       setSelectedChat(data);
-      // console.log("selectedChat",selectedChat);
+
       setLoadingChat(false);
       setOpenDrawer(false);
     } catch (error) {
-      toast.error(`${error.response.data.message}`,{
-        title:'Error fetching the chats',
-        position:'top-center',
-        autoClose:5000,
-        closeOnClick:true,
+      toast.error(`${error.response.data.message}`, {
+        title: 'Error fetching the chats',
+        position: 'top-center',
+        autoClose: 5000,
+        closeOnClick: true,
+        containerId:'navbar'
       })
     }
   }
@@ -97,24 +116,29 @@ const SideDrawer = () => {
     openDrawer === false ? setOpenDrawer(true) : setOpenDrawer(false);
   }
 
-  const handleLogout = ()=>{
+  const handleLogout = () => {
     setTimeout(() => {
       logoutHandler();
     }, 1800000);
   }
 
-  useEffect(()=>{
+  useEffect(() => {
     handleLogout();
-  },[])
+  }, [])
 
   const logoutHandler = () => {
     localStorage.removeItem("userInfo");
+    setUser({})
+    isUserAuthenticated(false);
     navigate("/");
+  }
+
+  const handleClick = () => {
+    navigate('/login')
   }
 
   return (
     <>
-    <ToastContainer/>
       <Box style={{ display: "flex", justifyContent: "space-between", alignItems: 'center', background: 'white', padding: '5px 10px 5px 10px', borderRadius: '5px', width: '100%', margin: '10px 10px 5px 10px' }}>
         <Tooltip title='Search Users to Chat' arrow >
           <Button style={{ textTransform: 'none' }} onClick={handleDrawer}>
@@ -123,7 +147,7 @@ const SideDrawer = () => {
 
           </Button>
         </Tooltip>
-        <Typography style={{ fontSize: '2xl' }}>Gossip</Typography>
+        <Typography sx={{ fontSize: '40px',fontFamily:'Work sans' }}>GOSSIP</Typography>
 
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', }}>
           <>
@@ -165,53 +189,55 @@ const SideDrawer = () => {
             </Menu>
           </>
           <>
-
-            <Button size="small" id="basic-button" aria-controls={openMenu ? 'basic-menu' : undefined}
-              aria-haspopup="true"
-              aria-expanded={openMenu ? 'true' : undefined} style={{ padding: '1px', display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={handleMenu}>
-              <Avatar sx={{ cursor: 'pointer', objectFit: 'cover', width: '40px', heigth: '40px' }} alt={user.name} src={user.pic === "" ? '/' : user.pic} />
-              <ExpandMoreOutlinedIcon style={{ fontSize: '2xl', margin: '1px' }} />
-            </Button>
-            <Menu id="basic-menu" open={openMenu} onClose={() => setOpenMenu(false)}
-              MenuListProps={{ 'aria-labelledby': 'basic-button', }}
-              anchorReference="anchorPosition"
-              anchorPosition={{ top: 55, left: 1500 }}
-              anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'left',
-              }}>
-              <ProfileModal User={user} >
-                <MenuItem >My Profile</MenuItem>
-              </ProfileModal>
-              <Divider />
-              <MenuItem onClick={logoutHandler}>Logout</MenuItem>
-            </Menu>
+            {isAuthenticated ? <>
+              <Button size="small" id="basic-button" aria-controls={openMenu ? 'basic-menu' : undefined}
+                aria-haspopup="true"
+                aria-expanded={openMenu ? 'true' : undefined} style={{ padding: '1px', display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={handleMenu}>
+                <Avatar sx={{ cursor: 'pointer', objectFit: 'cover', width: 42, heigth:'auto' }} alt={user.name} src={user.pic === "" ? '/' : user.pic} />
+                <ExpandMoreOutlinedIcon style={{ fontSize: '2xl', margin: '1px' }} />
+              </Button>
+              <Menu id="basic-menu" open={openMenu} onClose={() => setOpenMenu(false)}
+                MenuListProps={{ 'aria-labelledby': 'basic-button', }}
+                anchorReference="anchorPosition"
+                anchorPosition={{ top: 55, left: 1500 }}
+                anchorOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'left',
+                }}>
+                <ProfileModal User={user} >
+                  <MenuItem >My Profile</MenuItem>
+                </ProfileModal>
+                <Divider />
+                <MenuItem onClick={logoutHandler}>Logout</MenuItem>
+              </Menu>
+            </> : <Button sx={{ color: 'inherit' }} onClick={handleClick}>LOGIN</Button>
+            }
           </>
         </div>
       </Box>
       <Drawer open={openDrawer} onClose={handleDrawer}>
-        <Box style={{display:'flex',justifyContent:'space-between'}}>
-        <Typography borderBottomWidth="2px" variant='h5' style={{ padding: '5px' }}>Search User</Typography>
+        <Box style={{ display: 'flex', justifyContent: 'space-between' }}>
+          <Typography borderBottomWidth="2px" variant='h5' style={{ padding: '5px' }}>Search User</Typography>
           <IconButton size='medium' onClick={handleDrawer}>
-            <ChevronLeftIcon/>
+            <ChevronLeftIcon />
           </IconButton>
-          </Box>
+        </Box>
         <Box style={{ display: 'flex', paddingBottom: '2px' }}>
           <TextField size="small" placeholder='Search by name or email' value={search} onChange={(e) => setSearch(e.target.value)} style={{ marginLeft: '5px' }} />
           <Button size='large' onClick={handleSearch}>Go</Button>
         </Box>
         {loading ? (<ChatLoading />
         ) : (
-          <div style={{overflowY:'auto',overflowX:'hidden'}}>
-          {searchResult?.map((user) => (
-            
-            <UserListItem key={user._id} user={user} handleFunction={() => accessChat(user._id)} />
-            
-          ))}
+          <div style={{ overflowY: 'auto', overflowX: 'hidden' }}>
+            {searchResult?.map((user) => (
+
+              <UserListItem key={user._id} user={user} handleFunction={() => accessChat(user._id)} />
+
+            ))}
           </div>
         )}
         {loadingChat &&
@@ -220,6 +246,7 @@ const SideDrawer = () => {
           </Box>
         }
       </Drawer>
+      <ToastContainer containerId='navbar'/>
     </>
   )
 }
