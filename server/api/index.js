@@ -7,7 +7,8 @@ const cors = require("cors");
 const connectDB = require("../config/db");
 
 app.use(cors({
-    origin:'https://gossip-a-mern-chat-app.vercel.app'
+    origin:'https://gossip-a-mern-chat-app.vercel.app',
+    methods:["GET","POST","DELETE","PUT","PATCH"]
 }));
 
 app.use(express.json());
