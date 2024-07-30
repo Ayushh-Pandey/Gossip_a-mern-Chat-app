@@ -7,6 +7,7 @@ import axios from 'axios';
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import chatBackground from './chatBackground.jpg'
+import { DOMAIN } from '../../context/ChatProvider';
 
 const initialValues = {
     name: '',
@@ -35,7 +36,7 @@ const Signup = () => {
         e.preventDefault();
         try {
             
-                const response = await axios.post('/api/user/signup', credentials);
+                const response = await axios.post(`${DOMAIN}/api/user/signup`, credentials);
                 
                 // localStorage.setItem("userInfo", JSON.stringify(response.data));
                 navigate('/login');

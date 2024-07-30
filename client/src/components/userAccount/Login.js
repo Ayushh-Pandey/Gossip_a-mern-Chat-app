@@ -4,7 +4,7 @@ import { Link, useNavigate, } from 'react-router-dom';
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { IconButton, InputAdornment } from "@mui/material";
 import axios from 'axios';
-import { ChatContext, } from '../../context/ChatProvider';
+import { ChatContext, DOMAIN, } from '../../context/ChatProvider';
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import chatBackground from './chatBackground.jpg'
@@ -37,7 +37,7 @@ const Login = () => {
                     "Content-type": "application/json",
                 },
             };
-            const response = await axios.post("/api/user/login", credentials, config);
+            const response = await axios.post(`${DOMAIN}/api/user/login`, credentials, config);
 
             setUser(response.data);
             localStorage.setItem("userInfo", JSON.stringify(response.data))

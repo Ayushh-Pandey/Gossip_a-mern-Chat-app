@@ -4,7 +4,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ExpandMoreOutlinedIcon from '@mui/icons-material/ExpandMoreOutlined';
 import NotificationsIcon from '@mui/icons-material/Notifications';
-import { ChatContext, } from '../../context/ChatProvider';
+import { ChatContext, DOMAIN, } from '../../context/ChatProvider';
 import ProfileModal from './ProfileModal';
 import { useNavigate } from 'react-router-dom';
 import axios from "axios"
@@ -67,7 +67,7 @@ const SideDrawer = () => {
             Authorization: `Bearer ${user.token}`
           }
         };
-        const { data } = await axios.get(`/api/user?search=${search}`, config);
+        const { data } = await axios.get(`${DOMAIN}/api/user?search=${search}`, config);
         setLoading(false);
         setSearchResult(data);
       } catch (error) {
@@ -91,7 +91,7 @@ const SideDrawer = () => {
           Authorization: `Bearer ${user.token}`
         }
       };
-      const { data } = await axios.post('/api/chats', { userId }, config);
+      const { data } = await axios.post(`${DOMAIN}/api/chats`, { userId }, config);
 
       if (!chats.find((c) => c._id === data._id)) {
         setChats([data, ...chats]);

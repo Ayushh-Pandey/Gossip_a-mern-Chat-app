@@ -3,7 +3,7 @@ import React, { useContext, useState } from 'react'
 
 import CloseIcon from '@mui/icons-material/Close';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { ChatContext } from '../../context/ChatProvider';
+import { ChatContext, DOMAIN } from '../../context/ChatProvider';
 import UserBadgeItem from '../UserAvatar/UserBadgeItem';
 import axios from 'axios';
 import UserListItem from '../UserAvatar/UserListItem';
@@ -57,7 +57,7 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages, childr
                     Authorization: `Bearer ${user.token}`
                 }
             };
-            const { data } = await axios.put('/api/chats/groupremove', {
+            const { data } = await axios.put(`${DOMAIN}/api/chats/groupremove`, {
                 chatId: selectedChat._id,
                 userId: user1._id,
             }, config)
@@ -87,7 +87,7 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages, childr
                     Authorization: `Bearer ${user.token}`
                 }
             };
-            const { data } = await axios.put('/api/chats/rename', {
+            const { data } = await axios.put(`${DOMAIN}/api/chats/rename`, {
                 chatId: selectedChat._id,
                 chatName: groupChatName
             }, config)
@@ -120,7 +120,7 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages, childr
                     Authorization: `Bearer ${user.token}`
                 }
             };
-            const { data } = await axios.get(`/api/user?search=${search}`, config);
+            const { data } = await axios.get(`${DOMAIN}/api/user?search=${search}`, config);
             console.log(data);
             setLoading(false);
             setSearchResult(data);
@@ -160,7 +160,7 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages, childr
                     Authorization: `Bearer ${user.token}`
                 }
             };
-            const { data } = await axios.put('/api/chats/groupadd', {
+            const { data } = await axios.put(`${DOMAIN}/api/chats/groupadd`, {
                 chatId: selectedChat._id,
                 userId: user1._id,
             }, config)

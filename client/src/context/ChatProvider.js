@@ -2,6 +2,8 @@ import { createContext, useEffect, useState } from 'react';
 
 export const ChatContext = createContext(null);
 
+export const DOMAIN = 'https://gossip-a-mern-chat-app-mh7v.vercel.app'
+
 const ChatProvider = ({ children }) => {
     const [user, setUser] = useState(() => {
         const savedUser = localStorage.getItem("userInfo");
@@ -23,7 +25,8 @@ const ChatProvider = ({ children }) => {
         }
     }, []);
     
-    return (<ChatContext.Provider value={{ user, setUser, selectedChat, setSelectedChat, chats, setChats, notification, setNotification, isAuthenticated, isUserAuthenticated }}>{children}</ChatContext.Provider>)
+
+    return (<ChatContext.Provider value={{DOMAIN, user, setUser, selectedChat, setSelectedChat, chats, setChats, notification, setNotification, isAuthenticated, isUserAuthenticated }}>{children}</ChatContext.Provider>)
 }
 
 // export const ChatState = ()=>{

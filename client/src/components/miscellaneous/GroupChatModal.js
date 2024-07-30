@@ -1,6 +1,6 @@
 import { Box, Button, FormControl, IconButton, Modal, TextField, Typography } from '@mui/material'
 import React, { useContext, useEffect, useState } from 'react'
-import { ChatContext } from '../../context/ChatProvider';
+import { ChatContext, DOMAIN } from '../../context/ChatProvider';
 import axios from 'axios';
 import UserListItem from "../UserAvatar/UserListItem";
 import UserBadgeItem from '../UserAvatar/UserBadgeItem';
@@ -60,7 +60,7 @@ const GroupChatModal = ({ children }) => {
                         Authorization: `Bearer ${user.token}`
                     }
                 };
-                const { data } = await axios.get(`/api/user?search=${search}`, config);
+                const { data } = await axios.get(`${DOMAIN}/api/user?search=${search}`, config);
 
                 setLoading(false);
                 setSearchResult(data);
@@ -102,7 +102,7 @@ const GroupChatModal = ({ children }) => {
                         Authorization: `Bearer ${user.token}`
                     },
                 };
-                const response = await axios.post("/api/chats/group", {
+                const response = await axios.post(`${DOMAIN}/api/chats/group`, {
                     name: groupChatName,
                     users: JSON.stringify(selectedUsers.map((u) => u._id))
                 }, config)

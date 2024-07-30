@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { ChatContext } from '../context/ChatProvider'
+import { ChatContext, DOMAIN } from '../context/ChatProvider'
 import { Avatar, Box, Button, IconButton, Menu, MenuItem, Stack, Typography } from '@mui/material';
 import ChatLoading from "./ChatLoading.js";
 import axios from 'axios';
@@ -35,7 +35,7 @@ const MyChats = ({ fetchAgain }) => {
           }
         };
 
-        const { data } = await axios.get('/api/chats', config);
+        const { data } = await axios.get(`${DOMAIN}/api/chats`, config);
 
         setChats(data);
       } catch (error) {
@@ -61,7 +61,7 @@ const MyChats = ({ fetchAgain }) => {
           Authorization: `Bearer ${user.token}`
         }
       };
-      const response = await axios.delete(`/api/chats/${chatToDelete._id}`, config)
+      const response = await axios.delete(`${DOMAIN}/api/chats/${chatToDelete._id}`, config)
       if (response.status === 200) {
         console.log('chat deletion done')
         fetchChats();
@@ -88,7 +88,7 @@ const MyChats = ({ fetchAgain }) => {
               "Content-type": "application/json",
           },
       };
-      const response = await axios.post("/api/user/login", {email:'guestuser@gmail.com',password:'12345'}, config);
+      const response = await axios.post(`${DOMAIN}/api/user/login`, {email:'guestuser@gmail.com',password:'12345'}, config);
 
       setUser(response.data);
       localStorage.setItem("userInfo", JSON.stringify(response.data))

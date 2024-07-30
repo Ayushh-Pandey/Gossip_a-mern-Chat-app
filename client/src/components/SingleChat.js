@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { ChatContext } from '../context/ChatProvider'
+import { ChatContext,DOMAIN } from '../context/ChatProvider'
 import { Box, Button, CircularProgress, Divider, FormControl, IconButton, Menu, MenuItem, TextField, Typography } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
@@ -14,7 +14,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 
-const END_POINT = "https://gossip-a-mern-chat-app-mh7v.vercel.app/";
+const END_POINT = `${DOMAIN}`
 var socket, selectedChatCompare;
 
 const SingleChat = ({ fetchAgain, setFetchAgain }) => {
@@ -57,7 +57,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
             };
             setLoading(true)
 
-            const { data } = await axios.get(`/api/message/${selectedChat._id}`, config)
+            const { data } = await axios.get(`${DOMAIN}/api/message/${selectedChat._id}`, config)
 
             setMessages(data);
             setLoading(false);
@@ -88,7 +88,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                     },
                 };
                 setNewMessage("");
-                const { data } = await axios.post("/api/message", {
+                const { data } = await axios.post(`${DOMAIN}/api/message`, {
                     content: newMessage,
                     chatId: selectedChat._id,
                 }, config)
@@ -161,7 +161,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                 },
             };
 
-            const response = await axios.delete(`/api/message/${selectedChat._id}`, config);
+            const response = await axios.delete(`${DOMAIN}/api/message/${selectedChat._id}`, config);
             if (response.status === 200) {
                 console.log('message delete successfull')
                 fetchMessages();
