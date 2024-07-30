@@ -7,7 +7,7 @@ const cors = require("cors");
 const connectDB = require("../config/db");
 
 app.use(cors({
-    origin:'http://localhost:3000'
+    origin:'https://gossip-a-mern-chat-app.vercel.app'
 }));
 
 app.use(express.json());
@@ -37,7 +37,7 @@ const server = app.listen(PORT ,"0.0.0.0", ()=>{
 const io = require('socket.io')(server, {
     pingTimeout: 60000, // in milliseconds
     cors: {
-        origin: 'http://localhost:3000',
+        origin: 'https://gossip-a-mern-chat-app.vercel.app',
     }
 });
 io.on("connection", socketConnect)
