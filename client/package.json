@@ -29,6 +29,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
+  "proxy":"https://gossip-a-mern-chat-app-mh7v.vercel.app",
   "eslintConfig": {
     "extends": [
       "react-app",
@@ -46,6 +47,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "proxy":"https://gossip-a-mern-chat-app-mh7v.vercel.app"
+  }
 }
