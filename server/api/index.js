@@ -22,17 +22,6 @@ app.use("/api/user",userRoute);
 app.use("/api/chats",chatRoute);
 app.use("/api/message",messageRoute);
 
-// ----------------------deployment--------------------
-
-const __dirname1 = path.resolve();
-app.use(express.static(path.join(__dirname,'../client/build')));
-
-app.get('/*',(req,res)=>{
-    res.sendFile(path.resolve(__dirname,"../client/build",'index.html'));
-})
-
-// ----------------------deployment--------------------
-
 app.get('/',(req,res)=>{
     res.send("api is working")
 })
