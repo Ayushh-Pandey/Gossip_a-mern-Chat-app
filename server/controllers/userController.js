@@ -1,5 +1,4 @@
 const generateToken = require("../config/generateToken");
-const { socketConnect } = require("../config/webSocketConnect");
 const User = require("../models/userModel")
 const bcrypt = require("bcrypt");
 
