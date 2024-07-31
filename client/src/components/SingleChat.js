@@ -38,6 +38,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     useEffect(() => {
         if (isAuthenticated) {
             socket = io(END_POINT,{
+                transports:["websocket"],
                 withCredentials: true
             });
             socket.emit("setup", user);
