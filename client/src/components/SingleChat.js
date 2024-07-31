@@ -37,7 +37,9 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 
     useEffect(() => {
         if (isAuthenticated) {
-            socket = io(END_POINT);
+            socket = io(END_POINT,{
+                transports:["websocket","polling"]
+            });
             socket.emit("setup", user);
             socket.on('connected', () =>
                 setSocketConnected(true)
