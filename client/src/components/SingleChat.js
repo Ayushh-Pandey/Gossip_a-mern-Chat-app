@@ -14,7 +14,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 
-const END_POINT = `${DOMAIN}`
+const END_POINT = 'https://gossip-a-mern-chat-app-server.vercel.app'
 var socket, selectedChatCompare;
 
 const SingleChat = ({ fetchAgain, setFetchAgain }) => {
