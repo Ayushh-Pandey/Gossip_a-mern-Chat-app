@@ -2,7 +2,7 @@ import { createContext, useEffect, useState } from 'react';
 
 export const ChatContext = createContext(null);
 
-export const DOMAIN = 'https://gossip-a-mern-chat-app-mh7v.vercel.app'
+export const DOMAIN = 'https://gossip-a-mern-chat-app-server.vercel.app'
 
 const ChatProvider = ({ children }) => {
     const [user, setUser] = useState(() => {
