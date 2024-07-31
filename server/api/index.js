@@ -37,6 +37,8 @@ const io = require('socket.io')(server, {
     pingTimeout: 60000, // in milliseconds
     cors: {
         origin: 'https://gossip-a-mern-chat-app.vercel.app',
+        methods: ["GET", "POST","DELETE","PATCH","PUT"],
+        credentials: true
     }
 });
 io.on("connection", socketConnect)
