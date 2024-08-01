@@ -31,10 +31,7 @@ app.use("/api/message",messageRoute);
 app.get('/',(req,res)=>{
     res.send("api is working")
 })
-
 connectDB();
-
-
 
 // ------------------------socket.io for live chatting------------------------------------
 const { Server } = require("socket.io");
@@ -42,9 +39,8 @@ const { Server } = require("socket.io");
 const io = new Server(httpServer, {
     pingTimeout: 60000, // in milliseconds
     cors: {
-        origin: '',
+        // origin: '',
         methods: ["GET", "POST"],
-        credentials: true
     }
 });
 io.on("connection", (socket) => {
@@ -91,6 +87,8 @@ io.on("connection", (socket) => {
 
 // ------------------------socket.io for live chatting------------------------------------
 
-httpServer.listen(PORT ,"0.0.0.0", ()=>{
+httpServer.listen(PORT,"0.0.0.0", ()=>{
     console.log(`server is running on http://localhost:${PORT}`);
 })
+
+

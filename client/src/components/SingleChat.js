@@ -37,9 +37,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 
     useEffect(() => {
         if (isAuthenticated) {
-            socket = io(END_POINT,{
-                withCredentials: true
-            });
+            socket = io(END_POINT);
             socket.emit("setup", user);
             socket.on('connected', () =>
                 setSocketConnected(true)
