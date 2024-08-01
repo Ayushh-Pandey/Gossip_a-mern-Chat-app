@@ -34,13 +34,15 @@ app.get('/',(req,res)=>{
 
 connectDB();
 
+
+
 // ------------------------socket.io for live chatting------------------------------------
 const { Server } = require("socket.io");
 
 const io = new Server(httpServer, {
     pingTimeout: 60000, // in milliseconds
     cors: {
-        origin: 'https://gossip-a-mern-chat-app.vercel.app',
+        origin: '',
         methods: ["GET", "POST"],
         credentials: true
     }
