@@ -13,8 +13,6 @@ import io from "socket.io-client"
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-
-const END_POINT = 'https://gossip-a-mern-chat-app-server.vercel.app'
 var socket, selectedChatCompare;
 
 const SingleChat = ({ fetchAgain, setFetchAgain }) => {
@@ -37,7 +35,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 
     useEffect(() => {
         if (isAuthenticated) {
-            socket = io(END_POINT);
+            socket = io('https://gossip-a-mern-chat-app.onrender.com');
             socket.emit("setup", user);
             socket.on('connected', () =>
                 setSocketConnected(true)
