@@ -7,15 +7,14 @@ const httpServer = createServer(app);
 
 const cors = require("cors");
 
-
-require("dotenv").config();
+require("dotenv").config({path:'./server.env'});
 
 const PORT = process.env.PORT || 5000;
 
 const connectDB = require("../config/db");
 
 app.use(cors({
-    origin:'https://gossip-a-mern-chat-app.vercel.app'
+    origin:process.env.FRONTEND_URL,
 }));
 
 app.use(express.json());
@@ -31,6 +30,7 @@ app.use("/api/message",messageRoute);
 app.get('/',(req,res)=>{
     res.send("api is working")
 })
+
 connectDB();
 
 // ------------------------socket.io for live chatting------------------------------------
@@ -90,5 +90,3 @@ io.on("connection", (socket) => {
 httpServer.listen(PORT,"0.0.0.0", ()=>{
     console.log(`server is running on http://localhost:${PORT}`);
 })
-
-

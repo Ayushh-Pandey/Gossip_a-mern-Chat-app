@@ -2,7 +2,7 @@ import { createContext, useEffect, useState } from 'react';
 
 export const ChatContext = createContext(null);
 
-export const DOMAIN = 'https://gossip-a-mern-chat-app.onrender.com'
+export const DOMAIN = process.env.REACT_APP_API_URL
 
 const ChatProvider = ({ children }) => {
     const [user, setUser] = useState(() => {

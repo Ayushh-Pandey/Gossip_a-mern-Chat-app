@@ -35,7 +35,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 
     useEffect(() => {
         if (isAuthenticated) {
-            socket = io('https://gossip-a-mern-chat-app.onrender.com');
+            socket = io(process.env.REACT_APP_API_URL);
             socket.emit("setup", user);
             socket.on('connected', () =>
                 setSocketConnected(true)
